@@ -57,9 +57,23 @@ for card in class_cards:
         if "6.00 PM" in time_text:
             class_name = card.find_element(By.CSS_SELECTOR, "h3[id^='class-name-']").text
             button = card.find_element(By.CSS_SELECTOR, "button[id^='book-button-']")
-            button.click()
+            # ----------------  Step 4 - Class Booking: Checking if a class is already booked ----------------
 
-            print(f"Booked: {class_name} on {day_title}")
+            # Check if already booked
+            if button.text == "Booked":
+                print(f"✓ Already booked: {class_name} on {day_title}")
+            elif button.text == "Waitlisted":
+                print(f"✓ Already on waitlist: {class_name} on {day_title}")
+            elif button.text == "Book Class":
+                # Book the class
+                button.click()
+                print(f"✓ Successfully booked: {class_name} on {day_title}")
+            elif button.text == "Join Waitlist":
+                # Join waitlist if class is full
+                button.click()
+                print(f"✓ Joined waitlist for: {class_name} on {day_title}")
+            break
+        
 
 
 
