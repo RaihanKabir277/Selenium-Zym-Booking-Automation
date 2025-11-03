@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import os
+import time
 
 # Create Chrome Profile and create account manually. Put YOUR email and password here:
 ACCOUNT_EMAIL = " "
@@ -43,7 +44,11 @@ submit_btn.click()
 wait.until(ec.presence_of_element_located((By.ID, "schedule-page")))
 
 
-#---------------- Step - 3 Book a class ----------------- 
+#---------------- Step - 3 Book a class & add counters for my script ----------------- 
+booked_count = 0
+waitlist_count = 0
+already_booked_count = 0
+
 class_cards = driver.find_element(By.CSS_SELECTOR, "div[id^='class-card-']")
 
 for card in class_cards:
@@ -62,17 +67,28 @@ for card in class_cards:
             # Check if already booked
             if button.text == "Booked":
                 print(f"✓ Already booked: {class_name} on {day_title}")
+                already_booked_count += 1
             elif button.text == "Waitlisted":
                 print(f"✓ Already on waitlist: {class_name} on {day_title}")
+                already_booked_count += 1
             elif button.text == "Book Class":
                 # Book the class
                 button.click()
                 print(f"✓ Successfully booked: {class_name} on {day_title}")
+                booked_count += 1
             elif button.text == "Join Waitlist":
                 # Join waitlist if class is full
                 button.click()
                 print(f"✓ Joined waitlist for: {class_name} on {day_title}")
-            break
+                waitlist_count += 1
+                time.sleep(0.5)
+
+# ------ print summary---
+print("\n--- BOOKING SUMMARY ---")
+print(f"Classes booked: {booked_count}")
+print(f"Waitlists joined: {waitlist_count}")
+print(f"Already booked/waitlisted: {already_booked_count}")
+print(f"Total Tuesday 6pm classes processed: {booked_count + waitlist_count + already_booked_count}")
         
 
 
